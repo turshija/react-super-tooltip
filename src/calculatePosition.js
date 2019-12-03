@@ -1,3 +1,6 @@
+const availablePositions = [ 'top', 'bottom', 'left', 'right', 'top-left', 'top-right', 'bottom-left', 'bottom-right' ];
+const offsetablePositions = [ 'top', 'bottom', 'left', 'right' ];
+
 function calculateIntersection (box, viewport) {
   if (box.x + box.width < viewport.x) {
     return 0;
@@ -20,24 +23,65 @@ function calculateIntersection (box, viewport) {
   return ((bottom - top) * (right - left)) / (box.width * box.height);
 }
 
-function checkPosition (position, offset, targetBox, tooltipBox, viewport) {
+function checkOffsetPosition (targetBox, tooltipBox, viewport, coord, dim) {
+  let c = targetBox[coord] + targetBox[dim] / 2 - tooltipBox[dim] / 2;
+  let offset = 0;
+  if (c < viewport[coord]) {
+    const newX = Math.min(viewport[coord], targetBox[coord]);
+    offset = newX - c;
+    c = newX;
+  } else if (c + tooltipBox[dim] > viewport[coord] + viewport[dim]) {
+    const newX = Math.max(viewport[coord] + viewport[dim], targetBox[coord] + targetBox[dim]) - tooltipBox[dim];
+    offset = newX - c;
+    c = newX;
+  }
+
+  return { coord: c, offset };
+}
+
+function checkPosition (position, targetBox, tooltipBox, viewport, checkOffset = false) {
   const box = {
     width: tooltipBox.width,
-    height: tooltipBox.height
+    height: tooltipBox.height,
+    offset: 0
   };
 
   if (position === 'top') {
-    box.x = targetBox.x + targetBox.width / 2 - tooltipBox.width / 2;
+    if (checkOffset) {
+      const { coord, offset } = checkOffsetPosition(targetBox, tooltipBox, viewport, 'x', 'width');
+      box.x = coord;
+      box.offset = offset;
+    } else {
+      box.x = targetBox.x + targetBox.width / 2 - tooltipBox.width / 2;
+    }
     box.y = targetBox.y - tooltipBox.height;
   } else if (position === 'bottom') {
-    box.x = targetBox.x + targetBox.width / 2 - tooltipBox.width / 2;
+    if (checkOffset) {
+      const { coord, offset } = checkOffsetPosition(targetBox, tooltipBox, viewport, 'x', 'width');
+      box.x = coord;
+      box.offset = offset;
+    } else {
+      box.x = targetBox.x + targetBox.width / 2 - tooltipBox.width / 2;
+    }
     box.y = targetBox.y + targetBox.height;
   } else if (position === 'left') {
     box.x = targetBox.x - tooltipBox.width;
-    box.y = targetBox.y + targetBox.height / 2 - tooltipBox.height / 2;
+    if (checkOffset) {
+      const { coord, offset } = checkOffsetPosition(targetBox, tooltipBox, viewport, 'y', 'height');
+      box.y = coord;
+      box.offset = offset;
+    } else {
+      box.y = targetBox.y + targetBox.height / 2 - tooltipBox.height / 2;
+    }
   } else if (position === 'right') {
     box.x = targetBox.x + targetBox.width;
-    box.y = targetBox.y + targetBox.height / 2 - tooltipBox.height / 2;
+    if (checkOffset) {
+      const { coord, offset } = checkOffsetPosition(targetBox, tooltipBox, viewport, 'y', 'height');
+      box.y = coord;
+      box.offset = offset;
+    } else {
+      box.y = targetBox.y + targetBox.height / 2 - tooltipBox.height / 2;
+    }
   } else if (position === 'top-left') {
     box.x = targetBox.x - tooltipBox.width;
     box.y = targetBox.y - tooltipBox.height;
@@ -54,21 +98,39 @@ function checkPosition (position, offset, targetBox, tooltipBox, viewport) {
 
   return {
     box,
+    position,
     intersection: calculateIntersection(box, viewport)
   };
 }
 
-export default function calculatePosition (preferredPosition, currentPosition, currentOffset, targetBox, tooltipBox, viewport) {
-  const preferred = checkPosition(preferredPosition, 0, targetBox, tooltipBox, viewport);
-  if (preferred.intersection > 0.99) {
-    return preferred;
+export default function calculatePosition (preferredPosition, currentPosition, targetBox, tooltipBox, viewport) {
+  const positions = [];
+
+  let current = checkPosition(preferredPosition, targetBox, tooltipBox, viewport);
+  positions.push(current);
+  if (current.intersection > 0.99) {
+    return current;
   }
-  const positions = [ 'top', 'bottom', 'left', 'right', 'top-left', 'top-right', 'bottom-left', 'bottom-right' ];
-  for (const pos of positions) {
-    const current = checkPosition(pos, 0, targetBox, tooltipBox, viewport);
+
+  for (const pos of availablePositions) {
+    current = checkPosition(pos, targetBox, tooltipBox, viewport);
+    positions.push(current);
     if (current.intersection > 0.99) {
       return current;
     }
   }
-  return preferred;
+
+  for (const pos of offsetablePositions) {
+    current = checkPosition(pos, targetBox, tooltipBox, viewport, true);
+    positions.push(current);
+    if (current.intersection > 0.99) {
+      return current;
+    }
+  }
+
+  positions.sort((a, b) => b.intersection - a.intersection);
+
+  console.log(positions);
+
+  return positions[0];
 }
