@@ -87,7 +87,7 @@ function checkPosition (position, targetBox, tooltipBox, viewport, checkOffset =
     box.y = targetBox.y - tooltipBox.height;
   } else if (position === 'top-right') {
     box.x = targetBox.x + targetBox.width;
-    box.y = targetBox.y - tooltipBox.width;
+    box.y = targetBox.y - tooltipBox.height;
   } else if (position === 'bottom-left') {
     box.x = targetBox.x - tooltipBox.width;
     box.y = targetBox.y + targetBox.height;
