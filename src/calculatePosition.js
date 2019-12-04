@@ -1,4 +1,4 @@
-const availablePositions = [ 'top', 'bottom', 'left', 'right', 'top-left', 'top-right', 'bottom-left', 'bottom-right' ];
+export const availablePositions = [ 'top', 'bottom', 'left', 'right', 'top-left', 'top-right', 'bottom-left', 'bottom-right' ];
 const offsetablePositions = [ 'top', 'bottom', 'left', 'right' ];
 
 function calculateIntersection (box, viewport) {
@@ -39,7 +39,7 @@ function checkOffsetPosition (targetBox, tooltipBox, viewport, coord, dim) {
   return { coord: c, offset };
 }
 
-function checkPosition (position, targetBox, tooltipBox, viewport, checkOffset = false) {
+function checkPosition (position, distanceOffset, targetBox, tooltipBox, viewport, checkOffset = false) {
   const box = {
     width: tooltipBox.width,
     height: tooltipBox.height,
@@ -48,52 +48,52 @@ function checkPosition (position, targetBox, tooltipBox, viewport, checkOffset =
 
   if (position === 'top') {
     if (checkOffset) {
-      const { coord, offset } = checkOffsetPosition(targetBox, tooltipBox, viewport, 'x', 'width');
+      const { coord, offset } = checkOffsetPosition(targetBox, box, viewport, 'x', 'width');
       box.x = coord;
       box.offset = offset;
     } else {
-      box.x = targetBox.x + targetBox.width / 2 - tooltipBox.width / 2;
+      box.x = targetBox.x + targetBox.width / 2 - box.width / 2;
     }
-    box.y = targetBox.y - tooltipBox.height;
+    box.y = targetBox.y - box.height - distanceOffset;
   } else if (position === 'bottom') {
     if (checkOffset) {
-      const { coord, offset } = checkOffsetPosition(targetBox, tooltipBox, viewport, 'x', 'width');
+      const { coord, offset } = checkOffsetPosition(targetBox, box, viewport, 'x', 'width');
       box.x = coord;
       box.offset = offset;
     } else {
-      box.x = targetBox.x + targetBox.width / 2 - tooltipBox.width / 2;
+      box.x = targetBox.x + targetBox.width / 2 - box.width / 2;
     }
-    box.y = targetBox.y + targetBox.height;
+    box.y = targetBox.y + targetBox.height + distanceOffset;
   } else if (position === 'left') {
-    box.x = targetBox.x - tooltipBox.width;
+    box.x = targetBox.x - box.width - distanceOffset;
     if (checkOffset) {
-      const { coord, offset } = checkOffsetPosition(targetBox, tooltipBox, viewport, 'y', 'height');
+      const { coord, offset } = checkOffsetPosition(targetBox, box, viewport, 'y', 'height');
       box.y = coord;
       box.offset = offset;
     } else {
-      box.y = targetBox.y + targetBox.height / 2 - tooltipBox.height / 2;
+      box.y = targetBox.y + targetBox.height / 2 - box.height / 2;
     }
   } else if (position === 'right') {
-    box.x = targetBox.x + targetBox.width;
+    box.x = targetBox.x + targetBox.width + distanceOffset;
     if (checkOffset) {
-      const { coord, offset } = checkOffsetPosition(targetBox, tooltipBox, viewport, 'y', 'height');
+      const { coord, offset } = checkOffsetPosition(targetBox, box, viewport, 'y', 'height');
       box.y = coord;
       box.offset = offset;
     } else {
-      box.y = targetBox.y + targetBox.height / 2 - tooltipBox.height / 2;
+      box.y = targetBox.y + targetBox.height / 2 - box.height / 2;
     }
   } else if (position === 'top-left') {
-    box.x = targetBox.x - tooltipBox.width;
-    box.y = targetBox.y - tooltipBox.height;
+    box.x = targetBox.x - box.width - distanceOffset;
+    box.y = targetBox.y - box.height - distanceOffset;
   } else if (position === 'top-right') {
-    box.x = targetBox.x + targetBox.width;
-    box.y = targetBox.y - tooltipBox.height;
+    box.x = targetBox.x + targetBox.width + distanceOffset;
+    box.y = targetBox.y - box.height - distanceOffset;
   } else if (position === 'bottom-left') {
-    box.x = targetBox.x - tooltipBox.width;
-    box.y = targetBox.y + targetBox.height;
+    box.x = targetBox.x - box.width - distanceOffset;
+    box.y = targetBox.y + targetBox.height + distanceOffset;
   } else if (position === 'bottom-right') {
-    box.x = targetBox.x + targetBox.width;
-    box.y = targetBox.y + targetBox.height;
+    box.x = targetBox.x + targetBox.width + distanceOffset;
+    box.y = targetBox.y + targetBox.height + distanceOffset;
   }
 
   return {
@@ -103,17 +103,16 @@ function checkPosition (position, targetBox, tooltipBox, viewport, checkOffset =
   };
 }
 
-export default function calculatePosition (preferredPosition, currentPosition, targetBox, tooltipBox, viewport) {
+export default function calculatePosition (preferredPosition, currentPosition, distanceOffset, targetBox, tooltipBox, viewport) {
   const positions = [];
 
-  let current = checkPosition(preferredPosition, targetBox, tooltipBox, viewport);
-  positions.push(current);
+  let current = checkPosition(preferredPosition, distanceOffset, targetBox, tooltipBox, viewport);
   if (current.intersection > 0.99) {
     return current;
   }
 
   for (const pos of availablePositions) {
-    current = checkPosition(pos, targetBox, tooltipBox, viewport);
+    current = checkPosition(pos, distanceOffset, targetBox, tooltipBox, viewport);
     positions.push(current);
     if (current.intersection > 0.99) {
       return current;
@@ -121,7 +120,7 @@ export default function calculatePosition (preferredPosition, currentPosition, t
   }
 
   for (const pos of offsetablePositions) {
-    current = checkPosition(pos, targetBox, tooltipBox, viewport, true);
+    current = checkPosition(pos, distanceOffset, targetBox, tooltipBox, viewport, true);
     positions.push(current);
     if (current.intersection > 0.99) {
       return current;
