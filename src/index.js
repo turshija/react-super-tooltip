@@ -60,8 +60,6 @@ export default class ReactSuperTooltip extends Component {
 
   calculatePosition = () => {
     return calculatePosition(this.props.preferredPosition, this.state.position, this.target.getBoundingClientRect(), this.tooltip.getBoundingClientRect(), {
-      x: window.scrollX,
-      y: window.scrollY,
       width: window.innerWidth,
       height: window.innerHeight
     });

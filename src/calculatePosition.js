@@ -2,23 +2,23 @@ const availablePositions = [ 'top', 'bottom', 'left', 'right', 'top-left', 'top-
 const offsetablePositions = [ 'top', 'bottom', 'left', 'right' ];
 
 function calculateIntersection (box, viewport) {
-  if (box.x + box.width < viewport.x) {
+  if (box.x + box.width < 0) {
     return 0;
   }
-  if (box.x > viewport.x + viewport.width) {
+  if (box.x > viewport.width) {
     return 0;
   }
-  if (box.y + box.height < viewport.y) {
+  if (box.y + box.height < 0) {
     return 0;
   }
-  if (box.y > viewport.y + viewport.height) {
+  if (box.y > viewport.height) {
     return 0;
   }
 
-  const left = Math.max(box.x, viewport.x);
-  const right = Math.min(box.x + box.width, viewport.x + viewport.width);
-  const top = Math.max(box.y, viewport.y);
-  const bottom = Math.min(box.y + box.height, viewport.y + viewport.height);
+  const left = Math.max(box.x, 0);
+  const right = Math.min(box.x + box.width, viewport.width);
+  const top = Math.max(box.y, 0);
+  const bottom = Math.min(box.y + box.height, viewport.height);
 
   return ((bottom - top) * (right - left)) / (box.width * box.height);
 }
@@ -26,12 +26,12 @@ function calculateIntersection (box, viewport) {
 function checkOffsetPosition (targetBox, tooltipBox, viewport, coord, dim) {
   let c = targetBox[coord] + targetBox[dim] / 2 - tooltipBox[dim] / 2;
   let offset = 0;
-  if (c < viewport[coord]) {
-    const newX = Math.min(viewport[coord], targetBox[coord]);
+  if (c < 0) {
+    const newX = Math.min(0, targetBox[coord]);
     offset = newX - c;
     c = newX;
-  } else if (c + tooltipBox[dim] > viewport[coord] + viewport[dim]) {
-    const newX = Math.max(viewport[coord] + viewport[dim], targetBox[coord] + targetBox[dim]) - tooltipBox[dim];
+  } else if (c + tooltipBox[dim] > viewport[dim]) {
+    const newX = Math.max(viewport[dim], targetBox[coord] + targetBox[dim]) - tooltipBox[dim];
     offset = newX - c;
     c = newX;
   }
@@ -129,8 +129,6 @@ export default function calculatePosition (preferredPosition, currentPosition, t
   }
 
   positions.sort((a, b) => b.intersection - a.intersection);
-
-  console.log(positions);
 
   return positions[0];
 }
