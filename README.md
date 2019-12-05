@@ -5,6 +5,8 @@
 
 [TODO](https://www.google.com)
 
+[Spott.ai - interactive videos and images](https://spott.ai)
+
 ## WHY ANOTHER TOOLTIP LIBRARY ?!
 
 `react-super-tooltip` is made to be super simple to use, but still be very smart out of the box with default 
