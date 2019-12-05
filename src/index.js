@@ -2,6 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Tooltip from './Tooltip';
 import calculatePosition, { availablePositions } from './calculatePosition';
+import styled from '@emotion/styled';
+
+const StyledComponent = styled.div`
+  position: relative;
+`;
 
 export default class ReactSuperTooltip extends Component {
 
@@ -139,14 +144,15 @@ export default class ReactSuperTooltip extends Component {
   render () {
     /* eslint-disable no-unused-vars */
     const {
-      component: Comp, getContent, children, preferredPosition, interactive, trigger, arrowSize, arrowColor, offset,
+      component, getContent, children, preferredPosition, interactive, trigger, arrowSize, arrowColor, offset,
       tooltipClassName, onShow, onHide, onMouseEnter, onMouseLeave, onClick, ...props
     } = this.props;
     const { visible, position } = this.state;
     /* eslint-enable no-unused-vars */
 
     return (
-      <Comp
+      <StyledComponent
+        as={component}
         {...props}
         ref={this.setTargetRef}
         onMouseEnter={this.handleMouseEnter}
@@ -165,7 +171,7 @@ export default class ReactSuperTooltip extends Component {
           arrowSize={arrowSize}>
           {getContent(this.props)}
         </Tooltip>
-      </Comp>
+      </StyledComponent>
     );
   }
 

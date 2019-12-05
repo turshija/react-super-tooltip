@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 const Root = styled.div`
   pointer-events: none;
   opacity: 0;
-  position: fixed;
+  position: absolute;
   padding: ${(props) => props.arrowSize}px;
   
   &.open {

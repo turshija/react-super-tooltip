@@ -9,7 +9,7 @@ ReactDOM.render(
       trigger='hover'
       onShow={() => console.log('show')}
       getContent={() => 'test test test test'}
-      style={{ height: 50, width: 50, background: 'blue', marginTop: 200, marginLeft: 200 }}>
+      style={{ height: 50, width: 50, background: 'blue', marginTop: 200, marginLeft: 200, whiteSpace: 'nowrap' }}>
       <div/>
     </ReactSuperTooltip>
   </div>,

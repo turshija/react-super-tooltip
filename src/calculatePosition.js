@@ -103,19 +103,34 @@ function checkPosition (position, distanceOffset, targetBox, tooltipBox, viewpor
   };
 }
 
+function transformBox (calculatedPosition, targetBox) {
+  const { box, position } = calculatedPosition;
+
+  return {
+    position,
+    box: {
+      width: box.width,
+      height: box.height,
+      x: box.x - targetBox.x,
+      y: box.y - targetBox.y,
+      offset: box.offset
+    }
+  };
+}
+
 export default function calculatePosition (preferredPosition, currentPosition, distanceOffset, targetBox, tooltipBox, viewport) {
   const positions = [];
 
   let current = checkPosition(preferredPosition, distanceOffset, targetBox, tooltipBox, viewport);
   if (current.intersection > 0.99) {
-    return current;
+    return transformBox(current, targetBox);
   }
 
   for (const pos of availablePositions) {
     current = checkPosition(pos, distanceOffset, targetBox, tooltipBox, viewport);
     positions.push(current);
     if (current.intersection > 0.99) {
-      return current;
+      return transformBox(current, targetBox);
     }
   }
 
@@ -123,11 +138,11 @@ export default function calculatePosition (preferredPosition, currentPosition, d
     current = checkPosition(pos, distanceOffset, targetBox, tooltipBox, viewport, true);
     positions.push(current);
     if (current.intersection > 0.99) {
-      return current;
+      return transformBox(current, targetBox);
     }
   }
 
   positions.sort((a, b) => b.intersection - a.intersection);
 
-  return positions[0];
+  return transformBox(positions[0], targetBox);
 }
