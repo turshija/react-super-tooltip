@@ -9,6 +9,8 @@ ReactDOM.render(
       trigger='hover'
       onShow={() => console.log('show')}
       content='test test test test'
+      tooltipClassName='tooltip-class'
+      tooltipContainerClassName='root-class'
       style={{ height: 50, width: 50, background: 'blue', marginTop: 200, marginLeft: 200, whiteSpace: 'nowrap' }}>
       <div/>
     </ReactSuperTooltip>

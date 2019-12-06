@@ -22,6 +22,7 @@ export default class ReactSuperTooltip extends Component {
     offset: PropTypes.number,
     tooltip: PropTypes.node,
     tooltipClassName: PropTypes.string,
+    tooltipContainerClassName: PropTypes.string,
     onShow: PropTypes.func,
     onHide: PropTypes.func
   };
@@ -151,7 +152,7 @@ export default class ReactSuperTooltip extends Component {
     /* eslint-disable no-unused-vars */
     const {
       component, content, children, preferredPosition, interactive, trigger, arrowSize, arrowColor, offset,
-      tooltip, tooltipClassName, onShow, onHide, ...props
+      tooltip, tooltipClassName, tooltipContainerClassName, onShow, onHide, ...props
     } = this.props;
     const { visible, position } = this.state;
     /* eslint-enable no-unused-vars */
@@ -169,6 +170,7 @@ export default class ReactSuperTooltip extends Component {
           withRef={this.setTooltipRef}
           tooltip={tooltip}
           className={tooltipClassName}
+          rootClassName={tooltipContainerClassName}
           preferredPosition={preferredPosition}
           position={position}
           visible={visible}

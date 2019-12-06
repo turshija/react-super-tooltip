@@ -86,6 +86,7 @@ export default class Tooltip extends Component {
   static propTypes = {
     preferredPosition: PropTypes.string,
     children: PropTypes.node,
+    rootClassName: PropTypes.string,
     className: PropTypes.string,
     tooltip: PropTypes.node,
     interactive: PropTypes.bool,
@@ -244,13 +245,17 @@ export default class Tooltip extends Component {
   }
 
   render () {
-    const { children, interactive, visible, position, withRef, arrowColor, arrowSize, className, tooltip } = this.props;
+    const {
+      children, interactive, visible, position, withRef, arrowColor, arrowSize, rootClassName, className, tooltip
+    } = this.props;
+
+    const rootClass = [ visible ? 'open' : null, rootClassName ].filter((c) => !!c).join(' ');
 
     return (
       <Root
         ref={withRef}
         interactive={interactive}
-        className={visible ? 'open' : null}
+        className={rootClass}
         style={{ top: position.box.y, left: position.box.x }}
         arrowSize={arrowSize}>
         <UnderArrowBox style={this.getUnderArrowBoxStyle()}/>
