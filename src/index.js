@@ -12,25 +12,23 @@ export default class ReactSuperTooltip extends Component {
 
   static propTypes = {
     component: PropTypes.any,
-    getContent: PropTypes.func,
-    children: PropTypes.any,
+    content: PropTypes.node,
+    children: PropTypes.node,
     preferredPosition: PropTypes.oneOf(availablePositions),
     interactive: PropTypes.bool,
     trigger: PropTypes.oneOf([ 'click', 'hover' ]),
     arrowSize: PropTypes.number,
     arrowColor: PropTypes.string,
     offset: PropTypes.number,
+    tooltip: PropTypes.node,
     tooltipClassName: PropTypes.string,
     onShow: PropTypes.func,
-    onHide: PropTypes.func,
-    onMouseEnter: PropTypes.func,
-    onMouseLeave: PropTypes.func,
-    onClick: PropTypes.func
+    onHide: PropTypes.func
   };
 
   static defaultProps = {
     component: 'div',
-    getContent: () => null,
+    content: '',
     children: null,
     preferredPosition: 'right',
     interactive: true,
@@ -67,19 +65,24 @@ export default class ReactSuperTooltip extends Component {
   }
 
   calculatePosition = () => {
-    return calculatePosition(this.props.preferredPosition, this.state.position, this.props.offset, this.target.getBoundingClientRect(), this.tooltip.getBoundingClientRect(), {
-      width: window.innerWidth,
-      height: window.innerHeight
-    });
+    return calculatePosition(
+      this.props.preferredPosition,
+      this.state.position,
+      this.props.offset,
+      this.target.getBoundingClientRect(),
+      this.tooltip.getBoundingClientRect(), {
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
   };
 
-  showTooltip = (manual = false) => {
-    this.setState({ visible: true, manualOpen: manual, position: this.calculatePosition() }, () => this.props.onShow(this.props));
+  showTooltip = (manualOpen = false) => {
+    this.setState({ visible: true, manualOpen, position: this.calculatePosition() }, () => this.props.onShow());
 
     window.addEventListener('scroll', this.handleScroll);
     window.addEventListener('resize', this.handleResize);
 
-    if (this.props.trigger === 'click' || manual) {
+    if (this.props.trigger === 'click' || manualOpen) {
       window.addEventListener('click', this.handleClickOutside);
     }
   };
@@ -92,7 +95,7 @@ export default class ReactSuperTooltip extends Component {
       window.removeEventListener('click', this.handleClickOutside);
     }
 
-    this.setState({ visible: false }, () => this.props.onHide(this.props));
+    this.setState({ visible: false }, () => this.props.onHide());
   };
 
   show = () => this.showTooltip(true);
@@ -104,6 +107,7 @@ export default class ReactSuperTooltip extends Component {
       this.showTooltip();
     }
 
+    // eslint-disable-next-line react/prop-types
     this.props.onMouseEnter && this.props.onMouseEnter(e);
   };
 
@@ -112,6 +116,7 @@ export default class ReactSuperTooltip extends Component {
       this.hideTooltip();
     }
 
+    // eslint-disable-next-line react/prop-types
     this.props.onMouseLeave && this.props.onMouseLeave(e);
   };
 
@@ -122,6 +127,7 @@ export default class ReactSuperTooltip extends Component {
       this.showTooltip();
     }
 
+    // eslint-disable-next-line react/prop-types
     this.props.onClick && this.props.onClick(e);
   };
 
@@ -144,8 +150,8 @@ export default class ReactSuperTooltip extends Component {
   render () {
     /* eslint-disable no-unused-vars */
     const {
-      component, getContent, children, preferredPosition, interactive, trigger, arrowSize, arrowColor, offset,
-      tooltipClassName, onShow, onHide, onMouseEnter, onMouseLeave, onClick, ...props
+      component, content, children, preferredPosition, interactive, trigger, arrowSize, arrowColor, offset,
+      tooltip, tooltipClassName, onShow, onHide, ...props
     } = this.props;
     const { visible, position } = this.state;
     /* eslint-enable no-unused-vars */
@@ -161,6 +167,7 @@ export default class ReactSuperTooltip extends Component {
         {children}
         <Tooltip
           withRef={this.setTooltipRef}
+          tooltip={tooltip}
           className={tooltipClassName}
           preferredPosition={preferredPosition}
           position={position}
@@ -169,7 +176,7 @@ export default class ReactSuperTooltip extends Component {
           interactive={interactive}
           arrowColor={arrowColor}
           arrowSize={arrowSize}>
-          {getContent(this.props)}
+          {content}
         </Tooltip>
       </StyledComponent>
     );

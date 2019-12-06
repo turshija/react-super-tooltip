@@ -19,6 +19,7 @@ const Content = styled.div`
   border-radius: 5px;
   position: relative;
   padding: 8px;
+  cursor: default;
   z-index: 12;
 `;
 
@@ -84,8 +85,9 @@ export default class Tooltip extends Component {
 
   static propTypes = {
     preferredPosition: PropTypes.string,
-    children: PropTypes.any,
+    children: PropTypes.node,
     className: PropTypes.string,
+    tooltip: PropTypes.node,
     interactive: PropTypes.bool,
     visible: PropTypes.bool,
     position: PropTypes.object,
@@ -242,7 +244,7 @@ export default class Tooltip extends Component {
   }
 
   render () {
-    const { children, interactive, visible, position, withRef, arrowColor, arrowSize, className } = this.props;
+    const { children, interactive, visible, position, withRef, arrowColor, arrowSize, className, tooltip } = this.props;
 
     return (
       <Root
@@ -253,9 +255,11 @@ export default class Tooltip extends Component {
         arrowSize={arrowSize}>
         <UnderArrowBox style={this.getUnderArrowBoxStyle()}/>
         <Arrow className={position.position} size={arrowSize} color={arrowColor} style={this.getArrowPosition()}/>
-        <Content position={position} className={className}>
-          {children}
-        </Content>
+        {tooltip ? tooltip : (
+          <Content className={className}>
+            {children}
+          </Content>
+        )}
       </Root>
     );
   }

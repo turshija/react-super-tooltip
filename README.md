@@ -44,25 +44,22 @@ import ReactSuperTooltip from 'react-super-tooltip'
 
 Name                |Type       |Default    |Description
 |:---               |:---       |:---       |:---
-getContent          |Function   |noop       |Function that generates tooltip content
-onClick             |Function   |noop       |Gets called when user clicks on tooltip 
+content             |Node       |           |Tooltip content
 trigger             |String     |hover      |How to trigger tooltip (Available: hover, click)
 preferredPosition   |String     |right      |Define your preferred position that will be used if multiple positions are possible 
-interactive         |Bool       |true       |Change cursor to pointer to specify that tooltip is interactive
-component           |Component  |`div`      |Choose tooltip element
+interactive         |Bool       |true       |Allow mouse events on the tooltip and keep it open when hovered
+component           |Component  |`div`      |Choose container element
 arrowSize           |Number     |6          |Tooltip arrow size
 arrowColor          |String     |#fff       |Tooltip arrow color
-offset              |Number     |0          |Number of pixels to offset tooltip away from element
+offset              |Number     |0          |Number of pixels to offset tooltip away from the element
 onShow              |Function   |noop       |Callback function that will be called when tooltip is shown
 onHide              |Function   |noop       |Callback function that will be called when tooltip is hidden
-onMouseEnter        |Function   |noop       |Callback function that will be called when mouse enters target element
-onMouseLeave        |Function   |noop       |Callback function that will be called when mouse leaves target element
 
 ## Manually showing and hiding tooltips
 
 ### tooltipRef.show()
 
-> Show specific tooltip manually, for example:
+> Show the tooltip manually, for example:
 
 ```jsx
 import ReactSuperTooltip from 'react-super-tooltip';
