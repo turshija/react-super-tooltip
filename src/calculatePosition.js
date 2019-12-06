@@ -1,5 +1,6 @@
-export const availablePositions = [ 'top', 'bottom', 'left', 'right', 'top-left', 'top-right', 'bottom-left', 'bottom-right' ];
-const offsetablePositions = [ 'top', 'bottom', 'left', 'right' ];
+const sidePositions = [ 'top', 'bottom', 'left', 'right' ];
+const cornerPositions = [ 'top-left', 'top-right', 'bottom-left', 'bottom-right' ];
+export const availablePositions = [ ...sidePositions, ...cornerPositions ];
 
 function calculateIntersection (box, viewport) {
   if (box.x + box.width < 0) {
@@ -126,7 +127,7 @@ export default function calculatePosition (preferredPosition, currentPosition, d
     return transformBox(current, targetBox);
   }
 
-  for (const pos of availablePositions) {
+  for (const pos of sidePositions) {
     current = checkPosition(pos, distanceOffset, targetBox, tooltipBox, viewport);
     positions.push(current);
     if (current.intersection > 0.99) {
@@ -134,8 +135,16 @@ export default function calculatePosition (preferredPosition, currentPosition, d
     }
   }
 
-  for (const pos of offsetablePositions) {
+  for (const pos of sidePositions) {
     current = checkPosition(pos, distanceOffset, targetBox, tooltipBox, viewport, true);
+    positions.push(current);
+    if (current.intersection > 0.99) {
+      return transformBox(current, targetBox);
+    }
+  }
+
+  for (const pos of cornerPositions) {
+    current = checkPosition(pos, distanceOffset, targetBox, tooltipBox, viewport);
     positions.push(current);
     if (current.intersection > 0.99) {
       return transformBox(current, targetBox);
