@@ -49,52 +49,52 @@ function checkPosition (position, distanceOffset, targetBox, tooltipBox, viewpor
 
   if (position === 'top') {
     if (checkOffset) {
-      const { coord, offset } = checkOffsetPosition(targetBox, box, viewport, 'x', 'width');
+      const { coord, offset } = checkOffsetPosition(targetBox, box, viewport, 'left', 'width');
       box.x = coord;
       box.offset = offset;
     } else {
-      box.x = targetBox.x + targetBox.width / 2 - box.width / 2;
+      box.x = targetBox.left + targetBox.width / 2 - box.width / 2;
     }
-    box.y = targetBox.y - box.height - distanceOffset;
+    box.y = targetBox.top - box.height - distanceOffset;
   } else if (position === 'bottom') {
     if (checkOffset) {
-      const { coord, offset } = checkOffsetPosition(targetBox, box, viewport, 'x', 'width');
+      const { coord, offset } = checkOffsetPosition(targetBox, box, viewport, 'left', 'width');
       box.x = coord;
       box.offset = offset;
     } else {
-      box.x = targetBox.x + targetBox.width / 2 - box.width / 2;
+      box.x = targetBox.left + targetBox.width / 2 - box.width / 2;
     }
-    box.y = targetBox.y + targetBox.height + distanceOffset;
+    box.y = targetBox.top + targetBox.height + distanceOffset;
   } else if (position === 'left') {
-    box.x = targetBox.x - box.width - distanceOffset;
+    box.x = targetBox.left - box.width - distanceOffset;
     if (checkOffset) {
-      const { coord, offset } = checkOffsetPosition(targetBox, box, viewport, 'y', 'height');
+      const { coord, offset } = checkOffsetPosition(targetBox, box, viewport, 'top', 'height');
       box.y = coord;
       box.offset = offset;
     } else {
-      box.y = targetBox.y + targetBox.height / 2 - box.height / 2;
+      box.y = targetBox.top + targetBox.height / 2 - box.height / 2;
     }
   } else if (position === 'right') {
-    box.x = targetBox.x + targetBox.width + distanceOffset;
+    box.x = targetBox.left + targetBox.width + distanceOffset;
     if (checkOffset) {
-      const { coord, offset } = checkOffsetPosition(targetBox, box, viewport, 'y', 'height');
+      const { coord, offset } = checkOffsetPosition(targetBox, box, viewport, 'top', 'height');
       box.y = coord;
       box.offset = offset;
     } else {
-      box.y = targetBox.y + targetBox.height / 2 - box.height / 2;
+      box.y = targetBox.top + targetBox.height / 2 - box.height / 2;
     }
   } else if (position === 'top-left') {
-    box.x = targetBox.x - box.width - distanceOffset;
-    box.y = targetBox.y - box.height - distanceOffset;
+    box.x = targetBox.left - box.width - distanceOffset;
+    box.y = targetBox.top - box.height - distanceOffset;
   } else if (position === 'top-right') {
-    box.x = targetBox.x + targetBox.width + distanceOffset;
-    box.y = targetBox.y - box.height - distanceOffset;
+    box.x = targetBox.left + targetBox.width + distanceOffset;
+    box.y = targetBox.top - box.height - distanceOffset;
   } else if (position === 'bottom-left') {
-    box.x = targetBox.x - box.width - distanceOffset;
-    box.y = targetBox.y + targetBox.height + distanceOffset;
+    box.x = targetBox.left - box.width - distanceOffset;
+    box.y = targetBox.top + targetBox.height + distanceOffset;
   } else if (position === 'bottom-right') {
-    box.x = targetBox.x + targetBox.width + distanceOffset;
-    box.y = targetBox.y + targetBox.height + distanceOffset;
+    box.x = targetBox.left + targetBox.width + distanceOffset;
+    box.y = targetBox.top + targetBox.height + distanceOffset;
   }
 
   return {
@@ -112,8 +112,8 @@ function transformBox (calculatedPosition, targetBox) {
     box: {
       width: box.width,
       height: box.height,
-      x: box.x - targetBox.x,
-      y: box.y - targetBox.y,
+      x: box.x - targetBox.left,
+      y: box.y - targetBox.top,
       offset: box.offset
     }
   };
