@@ -23,6 +23,7 @@ export default class ReactSuperTooltip extends Component {
     tooltip: PropTypes.node,
     tooltipClassName: PropTypes.string,
     tooltipContainerClassName: PropTypes.string,
+    ignoreGlobalClick: PropTypes.bool,
     onShow: PropTypes.func,
     onHide: PropTypes.func
   };
@@ -37,6 +38,7 @@ export default class ReactSuperTooltip extends Component {
     arrowSize: 6,
     arrowColor: '#ffffff',
     offset: 0,
+    ignoreGlobalClick: false,
     onShow: () => null,
     onHide: () => null
   };
@@ -133,6 +135,10 @@ export default class ReactSuperTooltip extends Component {
   };
 
   handleClickOutside = () => {
+    if (this.props.ignoreGlobalClick) {
+      return;
+    }
+
     this.hideTooltip();
   };
 
