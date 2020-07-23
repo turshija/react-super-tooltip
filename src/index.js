@@ -67,6 +67,12 @@ export default class ReactSuperTooltip extends Component {
     this.setState({ position: this.calculatePosition() });
   }
 
+  componentWillUnmount () {
+    window.removeEventListener('scroll', this.handleScroll);
+    window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener('click', this.handleClickOutside);
+  }
+
   calculatePosition = () => {
     return calculatePosition(
       this.props.preferredPosition,
