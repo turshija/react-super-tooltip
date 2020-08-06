@@ -52,6 +52,7 @@ component           |Component  |`div`      |Choose container element
 arrowSize           |Number     |6          |Tooltip arrow size
 arrowColor          |String     |#fff       |Tooltip arrow color
 offset              |Number     |0          |Number of pixels to offset tooltip away from the element
+bounds              |String     |           |Selector or HTML element to be used as boundaries
 onShow              |Function   |noop       |Callback function that will be called when tooltip is shown
 onHide              |Function   |noop       |Callback function that will be called when tooltip is hidden
 

@@ -3,23 +3,23 @@ const cornerPositions = [ 'top-left', 'top-right', 'bottom-left', 'bottom-right'
 export const availablePositions = [ ...sidePositions, ...cornerPositions ];
 
 function calculateIntersection (box, viewport) {
-  if (box.x + box.width < 0) {
+  if (box.x + box.width < viewport.left) {
     return 0;
   }
-  if (box.x > viewport.width) {
+  if (box.x > viewport.left + viewport.width) {
     return 0;
   }
-  if (box.y + box.height < 0) {
+  if (box.y + box.height < viewport.top) {
     return 0;
   }
-  if (box.y > viewport.height) {
+  if (box.y > viewport.top + viewport.height) {
     return 0;
   }
 
-  const left = Math.max(box.x, 0);
-  const right = Math.min(box.x + box.width, viewport.width);
-  const top = Math.max(box.y, 0);
-  const bottom = Math.min(box.y + box.height, viewport.height);
+  const left = Math.max(box.x, viewport.left);
+  const right = Math.min(box.x + box.width, viewport.left + viewport.width);
+  const top = Math.max(box.y, viewport.top);
+  const bottom = Math.min(box.y + box.height, viewport.top + viewport.height);
 
   return ((bottom - top) * (right - left)) / (box.width * box.height);
 }
@@ -28,11 +28,11 @@ function checkOffsetPosition (targetBox, tooltipBox, viewport, coord, dim) {
   let c = targetBox[coord] + targetBox[dim] / 2 - tooltipBox[dim] / 2;
   let offset = 0;
   if (c < 0) {
-    const newX = Math.min(0, targetBox[coord]);
+    const newX = Math.min(viewport[coord], targetBox[coord]);
     offset = newX - c;
     c = newX;
   } else if (c + tooltipBox[dim] > viewport[dim]) {
-    const newX = Math.max(viewport[dim], targetBox[coord] + targetBox[dim]) - tooltipBox[dim];
+    const newX = Math.max(viewport[coord] + viewport[dim], targetBox[coord] + targetBox[dim]) - tooltipBox[dim];
     offset = newX - c;
     c = newX;
   }

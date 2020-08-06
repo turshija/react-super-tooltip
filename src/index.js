@@ -20,6 +20,7 @@ export default class ReactSuperTooltip extends Component {
     arrowSize: PropTypes.number,
     arrowColor: PropTypes.string,
     offset: PropTypes.number,
+    bounds: PropTypes.any,
     tooltip: PropTypes.node,
     tooltipClassName: PropTypes.string,
     tooltipContainerClassName: PropTypes.string,
@@ -38,6 +39,7 @@ export default class ReactSuperTooltip extends Component {
     arrowSize: 6,
     arrowColor: '#ffffff',
     offset: 0,
+    bounds: null,
     ignoreGlobalClick: false,
     onShow: () => null,
     onHide: () => null
@@ -73,16 +75,47 @@ export default class ReactSuperTooltip extends Component {
     window.removeEventListener('click', this.handleClickOutside);
   }
 
+  getViewport = () => {
+    if (this.props.bounds) {
+      let element = null;
+
+      if (this.props.bounds.length > 0) {
+        // string
+        element = document.querySelector(this.props.bounds);
+      } else if (this.props.bounds.outerHTML) {
+        // html element
+        element = this.props.bounds;
+      }
+
+      if (element) {
+        const box = element.getBoundingClientRect();
+
+        return {
+          top: Math.max(0, box.top),
+          left: Math.max(0, box.left),
+          width: Math.min(box.width, window.innerWidth),
+          height: Math.min(box.height, window.innerHeight)
+        };
+      }
+    }
+
+    return {
+      top: 0,
+      left: 0,
+      width: window.innerWidth,
+      height: window.innerHeight
+    };
+  };
+
   calculatePosition = () => {
     return calculatePosition(
       this.props.preferredPosition,
       this.state.position,
       this.props.offset,
       this.target.getBoundingClientRect(),
-      this.tooltip.getBoundingClientRect(), {
-        width: window.innerWidth,
-        height: window.innerHeight
-      });
+      this.tooltip.getBoundingClientRect(),
+      this.getViewport()
+    );
   };
 
   showTooltip = (manualOpen = false) => {
