@@ -69,6 +69,14 @@ export default class ReactSuperTooltip extends Component {
     this.setState({ position: this.calculatePosition() });
   }
 
+  componentDidUpdate (props, state) {
+    if (!state.visible && this.state.visible) {
+      this.props.onShow();
+    } else if (state.visible && !this.state.visible) {
+      this.props.onHide();
+    }
+  }
+
   componentWillUnmount () {
     window.removeEventListener('scroll', this.handleScroll);
     window.removeEventListener('resize', this.handleResize);
@@ -119,7 +127,7 @@ export default class ReactSuperTooltip extends Component {
   };
 
   showTooltip = (manualOpen = false) => {
-    this.setState({ visible: true, manualOpen, position: this.calculatePosition() }, () => this.props.onShow());
+    this.setState({ visible: true, manualOpen, position: this.calculatePosition() });
 
     window.addEventListener('scroll', this.handleScroll);
     window.addEventListener('resize', this.handleResize);
@@ -137,7 +145,7 @@ export default class ReactSuperTooltip extends Component {
       window.removeEventListener('click', this.handleClickOutside);
     }
 
-    this.setState({ visible: false }, () => this.props.onHide());
+    this.setState({ visible: false });
   };
 
   show = () => this.showTooltip(true);
