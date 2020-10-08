@@ -116,6 +116,10 @@ export default class ReactSuperTooltip extends Component {
   };
 
   calculatePosition = () => {
+    if (!this.target || !this.tooltip) {
+      return this.state.position;
+    }
+
     return calculatePosition(
       this.props.preferredPosition,
       this.state.position,
