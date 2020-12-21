@@ -17,6 +17,7 @@ export default class ReactSuperTooltip extends Component {
     preferredPosition: PropTypes.oneOf(availablePositions),
     interactive: PropTypes.bool,
     trigger: PropTypes.oneOf([ 'click', 'hover' ]),
+    ignoreTrigger: PropTypes.bool,
     arrowSize: PropTypes.number,
     arrowColor: PropTypes.string,
     offset: PropTypes.number,
@@ -35,6 +36,7 @@ export default class ReactSuperTooltip extends Component {
     children: null,
     preferredPosition: 'right',
     interactive: true,
+    ignoreTrigger: false,
     trigger: 'hover',
     arrowSize: 6,
     arrowColor: '#ffffff',
@@ -157,7 +159,7 @@ export default class ReactSuperTooltip extends Component {
   hide = () => this.hideTooltip();
 
   handleMouseEnter = (e) => {
-    if (this.props.trigger === 'hover') {
+    if (this.props.trigger === 'hover' && !this.props.ignoreTrigger) {
       this.showTooltip();
     }
 
@@ -166,7 +168,7 @@ export default class ReactSuperTooltip extends Component {
   };
 
   handleMouseLeave = (e) => {
-    if (this.props.trigger === 'hover') {
+    if (this.props.trigger === 'hover' && !this.props.ignoreTrigger) {
       this.hideTooltip();
     }
 
@@ -175,7 +177,7 @@ export default class ReactSuperTooltip extends Component {
   };
 
   handleClick = (e) => {
-    if (this.props.trigger === 'click') {
+    if (this.props.trigger === 'click' && !this.props.ignoreTrigger) {
       e.preventDefault();
       e.stopPropagation();
       this.showTooltip();
@@ -186,7 +188,7 @@ export default class ReactSuperTooltip extends Component {
   };
 
   handleClickOutside = () => {
-    if (this.props.ignoreGlobalClick) {
+    if (this.props.ignoreGlobalClick || this.props.ignoreTrigger) {
       return;
     }
 

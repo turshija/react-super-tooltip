@@ -46,6 +46,7 @@ Name                |Type       |Default    |Description
 |:---               |:---       |:---       |:---
 content             |Node       |           |Tooltip content
 trigger             |String     |hover      |How to trigger tooltip (Available: hover, click)
+ignoreTrigger       |Bool       |false      |Tooltip can be opened only manually (by calling tooltipRef.show()), trigger is ignored
 preferredPosition   |String     |right      |Define your preferred position that will be used if multiple positions are possible 
 interactive         |Bool       |true       |Allow mouse events on the tooltip and keep it open when hovered
 component           |Component  |`div`      |Choose container element
