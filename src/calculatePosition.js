@@ -107,19 +107,31 @@ function checkPosition (position, distanceOffset, targetBox, tooltipBox, viewpor
 function transformBox (calculatedPosition, targetBox) {
   const { box, position } = calculatedPosition;
 
+  const positionBox = {
+    width: box.width,
+    height: box.height,
+    x: box.x - targetBox.left,
+    y: box.y - targetBox.top,
+    offset: box.offset
+  };
+
+  const screenBox = {
+    width: positionBox.width,
+    height: positionBox.height,
+    top: targetBox.top + positionBox.y,
+    left: targetBox.left + positionBox.x
+  };
+
   return {
     position,
-    box: {
-      width: box.width,
-      height: box.height,
-      x: box.x - targetBox.left,
-      y: box.y - targetBox.top,
-      offset: box.offset
-    }
+    intersection: calculatedPosition.intersection,
+    originalPosition: true,
+    box: positionBox,
+    screenBox
   };
 }
 
-export default function calculatePosition (preferredPosition, currentPosition, distanceOffset, targetBox, tooltipBox, viewport) {
+export default function calculatePosition (preferredPosition, currentPosition, distanceOffset, targetBox, tooltipBox, viewport, keepInBounds) {
   const positions = [];
 
   let current = checkPosition(preferredPosition, distanceOffset, targetBox, tooltipBox, viewport);
@@ -153,5 +165,23 @@ export default function calculatePosition (preferredPosition, currentPosition, d
 
   positions.sort((a, b) => b.intersection - a.intersection);
 
-  return transformBox(positions[0], targetBox);
+  const finalPosition = transformBox(positions[0], targetBox);
+
+  if (keepInBounds && finalPosition.intersection < 0.9) {
+    finalPosition.originalPosition = false;
+
+    if (finalPosition.screenBox.top < viewport.top) {
+      finalPosition.box.y += viewport.top - finalPosition.screenBox.top;
+    } else if (finalPosition.screenBox.top + finalPosition.screenBox.height > viewport.top + viewport.height) {
+      finalPosition.box.y -= (finalPosition.screenBox.top + finalPosition.screenBox.height) - (viewport.top + viewport.height);
+    }
+
+    if (finalPosition.screenBox.left < viewport.left) {
+      finalPosition.box.x += viewport.left - finalPosition.screenBox.left;
+    } else if (finalPosition.screenBox.left + finalPosition.screenBox.width > viewport.left + viewport.width) {
+      finalPosition.box.x -= (finalPosition.screenBox.left + finalPosition.screenBox.width) - (viewport.left + viewport.width);
+    }
+  }
+
+  return finalPosition;
 }

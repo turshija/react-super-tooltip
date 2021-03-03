@@ -22,6 +22,7 @@ export default class ReactSuperTooltip extends Component {
     arrowColor: PropTypes.string,
     offset: PropTypes.number,
     bounds: PropTypes.any,
+    keepInBounds: PropTypes.bool,
     tooltip: PropTypes.node,
     tooltipClassName: PropTypes.string,
     tooltipContainerClassName: PropTypes.string,
@@ -42,6 +43,7 @@ export default class ReactSuperTooltip extends Component {
     arrowColor: '#ffffff',
     offset: 0,
     bounds: null,
+    keepInBounds: false,
     ignoreGlobalClick: false,
     onShow: () => null,
     onHide: () => null
@@ -59,7 +61,8 @@ export default class ReactSuperTooltip extends Component {
         offset: 0
       },
       position: 'left',
-      intersection: 0
+      intersection: 0,
+      originalPosition: true
     }
   };
 
@@ -100,11 +103,16 @@ export default class ReactSuperTooltip extends Component {
       if (element) {
         const box = element.getBoundingClientRect();
 
+        const top = Math.max(0, box.top);
+        const left = Math.max(0, box.left);
+        const bottom = Math.min(box.bottom, window.innerHeight);
+        const right = Math.min(box.right, window.innerWidth);
+
         return {
-          top: Math.max(0, box.top),
-          left: Math.max(0, box.left),
-          width: Math.min(box.width, window.innerWidth),
-          height: Math.min(box.height, window.innerHeight)
+          top,
+          left,
+          width: right - left,
+          height: bottom - top
         };
       }
     }
@@ -128,7 +136,8 @@ export default class ReactSuperTooltip extends Component {
       this.props.offset,
       this.target.getBoundingClientRect(),
       this.tooltip.getBoundingClientRect(),
-      this.getViewport()
+      this.getViewport(),
+      this.props.keepInBounds
     );
   };
 

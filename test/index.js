@@ -18,6 +18,7 @@ ReactDOM.render(
           trigger='hover'
           ref={(ref) => tooltipRef = ref}
           bounds='#container'
+          keepInBounds
           onShow={() => console.log('show')}
           content='test test test test'
           tooltipClassName='tooltip-class'

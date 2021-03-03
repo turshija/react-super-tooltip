@@ -259,7 +259,11 @@ export default class Tooltip extends Component {
         style={{ top: position.box.y, left: position.box.x }}
         arrowSize={arrowSize}>
         <UnderArrowBox style={this.getUnderArrowBoxStyle()}/>
-        <Arrow className={position.position} size={arrowSize} color={arrowColor} style={this.getArrowPosition()}/>
+        <Arrow
+          className={position.position}
+          size={arrowSize}
+          color={position.originalPosition ? arrowColor : 'transparent'}
+          style={this.getArrowPosition()}/>
         {tooltip ? tooltip : (
           <Content className={className}>
             {children}

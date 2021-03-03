@@ -54,6 +54,7 @@ arrowSize           |Number     |6          |Tooltip arrow size
 arrowColor          |String     |#fff       |Tooltip arrow color
 offset              |Number     |0          |Number of pixels to offset tooltip away from the element
 bounds              |String     |           |Selector or HTML element to be used as boundaries
+keepInBounds        |Bool       |false      |Keep the tooltip inside the boundaries even if it covers the target element
 onShow              |Function   |noop       |Callback function that will be called when tooltip is shown
 onHide              |Function   |noop       |Callback function that will be called when tooltip is hidden
 
