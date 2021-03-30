@@ -146,19 +146,13 @@ export default class ReactSuperTooltip extends Component {
 
     window.addEventListener('scroll', this.handleScroll);
     window.addEventListener('resize', this.handleResize);
-
-    if (this.props.trigger === 'click' || manualOpen) {
-      window.addEventListener('click', this.handleClickOutside);
-    }
+    window.addEventListener('click', this.handleClickOutside);
   };
 
   hideTooltip = () => {
     window.removeEventListener('scroll', this.handleScroll);
     window.removeEventListener('resize', this.handleResize);
-
-    if (this.props.trigger === 'click' || this.state.manualOpen) {
-      window.removeEventListener('click', this.handleClickOutside);
-    }
+    window.removeEventListener('click', this.handleClickOutside);
 
     this.setState({ visible: false });
   };
@@ -201,7 +195,9 @@ export default class ReactSuperTooltip extends Component {
       return;
     }
 
-    this.hideTooltip();
+    if (this.props.trigger === 'click' || this.state.manualOpen) {
+      this.hideTooltip();
+    }
   };
 
   handleScroll = () => {
