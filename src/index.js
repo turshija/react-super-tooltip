@@ -182,7 +182,6 @@ export default class ReactSuperTooltip extends Component {
   handleClick = (e) => {
     if (this.props.trigger === 'click' && !this.props.ignoreTrigger) {
       e.preventDefault();
-      e.stopPropagation();
       this.showTooltip();
     }
 
@@ -190,13 +189,15 @@ export default class ReactSuperTooltip extends Component {
     this.props.onClick && this.props.onClick(e);
   };
 
-  handleClickOutside = () => {
+  handleClickOutside = (e) => {
     if (this.props.ignoreGlobalClick || this.props.ignoreTrigger) {
       return;
     }
 
     if (this.props.trigger === 'click' || this.state.manualOpen) {
-      this.hideTooltip();
+      if (e.target !== this.target && !this.target.contains(e.target)) {
+        this.hideTooltip();
+      }
     }
   };
 
